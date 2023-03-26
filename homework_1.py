@@ -29,3 +29,7 @@ print(id(B) == id(C))
 # Task_7
 x, y, z = input("Введите переменную x: "), input("Введите переменную y: "), input("Введите переменную z : ")
 print(f'Значения: x={x}, y={y}, z={z},Типы: x={type(x)}, y={type(y)}, z={type(z)}, Идентификаторы:x={id(x)}, y={id(y)}, z={id(z)}')
+
+#Task_8
+x=6
+print(x)
