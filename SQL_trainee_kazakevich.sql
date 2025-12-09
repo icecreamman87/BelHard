@@ -7,6 +7,7 @@ group by c.name
 order by count(*) desc
 
 # Task 2. Output the 10 actors whose movies rented the most, sorted in descending order
+# Variant 1
 select first_name, last_name,count(r.inventory_id) as movie_rent_qty from actor a 
 join film_actor fa on a.actor_id=fa.actor_id 
 join film f on fa.film_id=f.film_id
@@ -15,6 +16,19 @@ join rental r on i.inventory_id=r.inventory_id
 group by first_name, last_name
 order by movie_rent_qty desc 
 limit 10
+
+#Variant 2
+with movies_rent as(select a.first_name, a.last_name, count(r.inventory_id) as movie_rent_qty 
+from actor a
+join film_actor fa on a.actor_id=fa.actor_id 
+join film f on fa.film_id=f.film_id
+join inventory i on f.film_id=i.film_id
+join rental r on i.inventory_id=r.inventory_id
+group by a.first_name, a.last_name)
+select first_name, last_name, movie_rent_qty, rank_number from (select first_name, last_name,
+movie_rent_qty, rank() over(order by movie_rent_qty desc) as rank_number from movies_rent) 
+as rent_movies
+where rank_number between 1 and 10  
 
 #Task 3. Output the category of movies on which the most money was spent.
 select c.name, sum(p.amount) as total_amount  from category c 
@@ -82,6 +96,21 @@ order by inactive_customer desc
 
 #Task 7. Output the category of movies that have the highest number of total rental hours in the city (customer.address_id in this city) and 
 #that start with the letter “a”. Do the same for cities that have a “-” in them. Write everything in one query.
+#7.1.
+select c.name,cs.address_id,sum(time_to_sec(TIMEDIFF(r.return_date,r.rental_date))/3600) as rental_hour from category c 
+join film_category fm on c.category_id=fm.category_id
+join film f on fm.film_id=f.film_id
+join inventory i on f.film_id=i.film_id
+join rental r on i.inventory_id=r.inventory_id
+join customer cs on r.customer_id=cs.customer_id
+join address a on cs.address_id=a.address_id
+join city ct on a.city_id=ct.city_id
+where c.name like 'a%' 
+group by c.name,cs.address_id
+order by rental_hour desc
+limit 1 
+
+#7.2.
 select c.name,ct.city,sum(time_to_sec(TIMEDIFF(r.return_date,r.rental_date))/3600) as rental_hour from category c 
 join film_category fm on c.category_id=fm.category_id
 join film f on fm.film_id=f.film_id
@@ -90,8 +119,9 @@ join rental r on i.inventory_id=r.inventory_id
 join customer cs on r.customer_id=cs.customer_id
 join address a on cs.address_id=a.address_id
 join city ct on a.city_id=ct.city_id
-where c.name like 'a%' and ct.city like'%-%'
+where ct.city like'%-%'
 group by c.name,ct.city
 order by rental_hour desc
 limit 1
+
 
