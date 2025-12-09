@@ -38,6 +38,10 @@ select f.title, i.inventory_id from film f
 left join inventory i on f.film_id=i.film_id
 where i.inventory_id is null
 
+#Variant 3
+SELECT f. title FROM film f 
+WHERE not EXISTS (SELECT 1 FROM inventory i WHERE f.film_id=i.film_id)
+
 #Task 5. Output the top 3 actors who have appeared the most in movies in the “Children” 
 #category. If several actors have the same number of movies, output all of them.
 #Variant 1
@@ -90,3 +94,4 @@ where c.name like 'a%' and ct.city like'%-%'
 group by c.name,ct.city
 order by rental_hour desc
 limit 1
+
