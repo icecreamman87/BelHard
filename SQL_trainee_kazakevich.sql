@@ -16,6 +16,8 @@ group by first_name, last_name
 order by movie_rent_qty desc 
 limit 10
 
+# Что произойдёт если в базе будет два человека с одинаковыми именем и фамилией?
+  
 #Task 3. Output the category of movies on which the most money was spent.
 select c.name, sum(p.amount) as total_amount  from category c 
 join film_category fc on c.category_id=fc.category_id
@@ -34,13 +36,10 @@ select f.title from film f left join inventory i on f.film_id=i.film_id
 where f.film_id not in(select i.film_id from inventory i)
 
 #Variant 2
+  # принят этот
 select f.title, i.inventory_id from film f 
 left join inventory i on f.film_id=i.film_id
 where i.inventory_id is null
-
-#Variant 3
-SELECT f. title FROM film f 
-WHERE not EXISTS (SELECT 1 FROM inventory i WHERE f.film_id=i.film_id)
 
 #Task 5. Output the top 3 actors who have appeared the most in movies in the “Children” 
 #category. If several actors have the same number of movies, output all of them.
@@ -56,6 +55,7 @@ order by appear_count desc
 limit 6
 
 #Variant 2
+  # принят этот
 with actor_count as(select 
 a.first_name, 
 a.last_name, 
@@ -82,6 +82,9 @@ order by inactive_customer desc
 
 #Task 7. Output the category of movies that have the highest number of total rental hours in the city (customer.address_id in this city) and 
 #that start with the letter “a”. Do the same for cities that have a “-” in them. Write everything in one query.
+
+# решение не соответствует условию
+  
 select c.name,ct.city,sum(time_to_sec(TIMEDIFF(r.return_date,r.rental_date))/3600) as rental_hour from category c 
 join film_category fm on c.category_id=fm.category_id
 join film f on fm.film_id=f.film_id
@@ -94,4 +97,3 @@ where c.name like 'a%' and ct.city like'%-%'
 group by c.name,ct.city
 order by rental_hour desc
 limit 1
-
