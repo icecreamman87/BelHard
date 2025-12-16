@@ -127,7 +127,7 @@ print(data.groupby('occupation').size().sort_values(ascending=False))
 
 def filter_func(group):
     avg_age_condition = group['age'].mean() <= 40
-    hours_condition = group['hours-per-week'].min() >= 5
+    hours_condition = group['hours-per-week'].min() > 5
     return avg_age_condition and hours_condition
 
 
@@ -137,3 +137,4 @@ print(filtered_data)
 final_groups = filtered_data.groupby('occupation').size()
 print("Количество людей в отфильтрованных группах:")
 print(final_groups)
+
